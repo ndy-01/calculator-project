@@ -1,26 +1,22 @@
+
 var container = document.getElementById('container');
 document.addEventListener('keydown', function(e){
     dealWithKeyPress(e);
 });
 
 document.addEventListener('keyup', function(e){
-    let button = document.getElementById(e.key);
-    button.classList.toggle('boxpressed');
-    button.classList.toggle('box');
+    shoogleTheBox(getKeyPressed(e.key));
 });
 
 function dealWithKeyPress(event){
-    let key = getKeyPressed(event.key);
-    if (key === false){
-        alert("not a symbol");
+    let keyPress = getKeyPressed(event.key);
+    if (keyPress === false){
         return};
     if (displayTooLong()) {
         return;
     };
-
-
-    shoogleTheBox(key);
-    addToDisplay(key);
+    shoogleTheBox(keyPress);
+    addToDisplay(keyPress);
 }
 
 function displayTooLong(){
@@ -37,8 +33,7 @@ function getKeyPressed(eventKey){
         answer = eventKey;
     } else for (let i = 0, l = symbolList.length; i < l; i++){
         if (symbolList[i] == eventKey){
-            alert('is a symbol');
-            answer = symbolList[i];
+            answer = idList[i];
         }
     }
     return answer;
@@ -50,24 +45,30 @@ function shoogleTheBox(boxID){
     button.classList.toggle('box');
 }
 
-function addToDisplay(k){
-    if (isKeyASymbol(k)){
-        itsASymbol(k);
+function addToDisplay(keyPressed){
+    if (isKeyASymbol(keyPressed)){
+        itsASymbol(keyPressed);
     } else {
-        itsANumber(k);
+        itsANumber(keyPressed)
     }
 }
 
-function isKeyASymbol(key){
-    if (key >= 0 && key <=9){
+function isKeyASymbol(keyPress){
+    if (keyPress >= 0 && keyPress <=9){
         return false;
     } else {
         return true;
     }
 }
 
-function itsASymbol(x){
-    let symbol = x.key;
+function itsASymbol(keyPressed){
+    let runningTotal;
+    switch (keyPressed){
+        case 'equals':
+            alert();
+            getRunningTotal();
+            break;
+    }
 }
 
 function itsANumber(key){
@@ -78,4 +79,9 @@ function itsANumber(key){
     } else {
         dispBox.innerText += key.toString();
     }
+}
+
+function getRunningTotal(){
+    displayBox = document.getElementById('displayBox');
+    return displayBox.innerText;
 }
