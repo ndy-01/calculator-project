@@ -1,3 +1,10 @@
+// Shoogle the box is being called by the keyup listener
+// This means that whatever key is pressed shoogleTheBox is called
+// and sometimes that is going to be called on a non-existent button
+//
+// Need to look at how the keyup function is implemented
+//
+// DELETE THIS NOTES WHEN DONE!!!
 
 var container = document.getElementById('container');
 document.addEventListener('keydown', function(e){
@@ -5,16 +12,20 @@ document.addEventListener('keydown', function(e){
 });
 
 document.addEventListener('keyup', function(e){
-    shoogleTheBox(getKeyPressed(e.key));
+    let keyPress = getKeyPressed(e.key);
+    if (keyPress != false && keyPress != "shift"){
+        shoogleTheBox(getKeyPressed(e.key));
+    }
 });
 
 function dealWithKeyPress(event){
     let keyPress = getKeyPressed(event.key);
-    if (keyPress === false){
-        return};
+    if (keyPress === false || keyPress == "shift"){
+        return;
+    }
     if (displayTooLong()) {
         return;
-    };
+    }
     shoogleTheBox(keyPress);
     addToDisplay(keyPress);
 }
@@ -40,6 +51,7 @@ function getKeyPressed(eventKey){
 }
 
 function shoogleTheBox(boxID){
+    console.log(boxID);
     let button = document.getElementById(boxID.toString());
     button.classList.toggle('boxpressed');
     button.classList.toggle('box');
@@ -65,7 +77,6 @@ function itsASymbol(keyPressed){
     let runningTotal;
     switch (keyPressed){
         case 'equals':
-            alert();
             getRunningTotal();
             break;
     }
