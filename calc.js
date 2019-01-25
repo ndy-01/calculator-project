@@ -1,10 +1,8 @@
-// Shoogle the box is being called by the keyup listener
-// This means that whatever key is pressed shoogleTheBox is called
-// and sometimes that is going to be called on a non-existent button
-//
-// Need to look at how the keyup function is implemented
-//
-// DELETE THIS NOTES WHEN DONE!!!
+// Global variables
+
+var currentTotal = 0;
+
+// EVent listeners
 
 var container = document.getElementById('container');
 document.addEventListener('keydown', function(e){
@@ -18,6 +16,8 @@ document.addEventListener('keyup', function(e){
     }
 });
 
+// Keyboard functions
+
 function dealWithKeyPress(event){
     let keyPress = getKeyPressed(event.key);
     if (keyPress === false || keyPress == "shift"){
@@ -30,15 +30,9 @@ function dealWithKeyPress(event){
     addToDisplay(keyPress);
 }
 
-function displayTooLong(){
-    var numDisplay = document.getElementById('numDisplay');
-    var strDisplay = numDisplay.innerText;
-    return (strDisplay.length < 8 ? false : true);
-}
-
 function getKeyPressed(eventKey){
-    let symbolList = ['+', '-', '/', '*', '=', '.', 'Shift'];
-    let idList = ['plus', 'minus', 'divide', 'multiply', 'equals', 'decimal', 'shift'];
+    let symbolList = ['+', '-', '/', '*', '=', '.', 'Shift', 'c'];
+    let idList = ['plus', 'minus', 'divide', 'multiply', 'equals', 'decimal', 'shift', 'cancel'];
     let answer = false;
     if (eventKey >= 0 && eventKey <=9){
         answer = eventKey;
@@ -51,18 +45,17 @@ function getKeyPressed(eventKey){
 }
 
 function shoogleTheBox(boxID){
-    console.log(boxID);
     let button = document.getElementById(boxID.toString());
     button.classList.toggle('boxpressed');
     button.classList.toggle('box');
 }
 
-function addToDisplay(keyPressed){
-    if (isKeyASymbol(keyPressed)){
-        itsASymbol(keyPressed);
-    } else {
-        itsANumber(keyPressed)
-    }
+// These are the thinking operations
+
+function displayTooLong(){
+    var numDisplay = document.getElementById('numDisplay');
+    var strDisplay = numDisplay.innerText;
+    return (strDisplay.length < 8 ? false : true);
 }
 
 function isKeyASymbol(keyPress){
@@ -77,7 +70,15 @@ function itsASymbol(keyPressed){
     let runningTotal;
     switch (keyPressed){
         case 'equals':
-            getRunningTotal();
+            break;
+        case 'plus':
+            plusOperation();
+            break;
+        case 'cancel':
+            cancelOperation();
+            break;
+        default:
+            alert("It's all fucked!");
             break;
     }
 }
@@ -92,7 +93,47 @@ function itsANumber(key){
     }
 }
 
-function getRunningTotal(){
-    displayBox = document.getElementById('displayBox');
-    return displayBox.innerText;
+// These functions operate the numeric display
+
+function addToDisplay(keyPressed){
+    if (isKeyASymbol(keyPressed)){
+        itsASymbol(keyPressed);
+    } else {
+        itsANumber(keyPressed)
+    }
+}
+
+function readDisplay(){
+    displayBox = document.getElementById('numDisplay');
+    return numDisplay.innerText;
+}
+
+function printToDisplay(thisNumber){
+    let numDisplay = document.getElementById('numDisplay');
+    numDisplay.innerText = currentTotal;
+}
+
+function clearDisplay(){
+    let numDisplay = document.getElementById('numDisplay');
+    numDisplay.innerText = 0;
+}
+
+// These are the actual operation buttons
+
+function cancelOperation(){
+    currentTotal = 0;
+    clearDisplay();
+}
+
+function plusOperation(){
+    let enteredNumber;
+
+    enteredNumber = Number(document.getElementById('numDisplay').innerText);
+    currentTotal += enteredNumber;
+    clearDisplay();
+}
+
+function equalsOperation(){
+    printToDisplay(currentTotal);
+    currentTotal = 0;
 }
