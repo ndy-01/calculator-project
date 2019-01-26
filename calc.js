@@ -1,6 +1,7 @@
 // Global variables
 
 var currentTotal = 0;
+var lastOperation = 'start';
 
 // EVent listeners
 
@@ -23,7 +24,7 @@ function dealWithKeyPress(event){
     if (keyPress === false || keyPress == "shift"){
         return;
     }
-    if (displayTooLong()) {
+    if (displayTooLong() || lastOperation == 'equals') {
         return;
     }
     shoogleTheBox(keyPress);
@@ -66,21 +67,38 @@ function isKeyASymbol(keyPress){
     }
 }
 
-function itsASymbol(keyPressed){
-    let runningTotal;
-    switch (keyPressed){
+function itsASymbol(thisOperation){
+    let lastNumber = readDisplay();
+    switch (lastOperation){
+        case 'start':
+            currentTotal = lastNumber;
+        case 'plus':
+            currentTotal += lastNumber;
+            break;
+        case 'minus':
+            currentTotal -= lastNumber;
+            break;
+        case 'multiply':
+            currentTotal = currentTotal * lastNumber;
+            break;
+        case 'divide':
+            currentTotal = currentTotal / lastNumber;
+            break;
         case 'equals':
             break;
-        case 'plus':
-            plusOperation();
-            break;
-        case 'cancel':
-            cancelOperation();
-            break;
-        default:
-            alert("It's all fucked!");
-            break;
     }
+    if (thisOperation == 'equals'){
+        printToDisplay(currentTotal);
+        lastOperation = 'start';
+        currentTotal = 0;
+    } else {
+        lastOperation = thisOperation;
+        clearDisplay();
+    }
+}
+
+function keyNotEquals(lastNumber,keyPressed){
+    
 }
 
 function itsANumber(key){
@@ -105,7 +123,7 @@ function addToDisplay(keyPressed){
 
 function readDisplay(){
     displayBox = document.getElementById('numDisplay');
-    return numDisplay.innerText;
+    return Number(numDisplay.innerText);
 }
 
 function printToDisplay(thisNumber){
@@ -122,18 +140,6 @@ function clearDisplay(){
 
 function cancelOperation(){
     currentTotal = 0;
+    lastOperation = 'start';
     clearDisplay();
-}
-
-function plusOperation(){
-    let enteredNumber;
-
-    enteredNumber = Number(document.getElementById('numDisplay').innerText);
-    currentTotal += enteredNumber;
-    clearDisplay();
-}
-
-function equalsOperation(){
-    printToDisplay(currentTotal);
-    currentTotal = 0;
 }
