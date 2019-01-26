@@ -33,7 +33,8 @@ function dealWithKeyPress(event){
 
 function getKeyPressed(eventKey){
     let symbolList = ['+', '-', '/', '*', '=', '.', 'Shift', 'c'];
-    let idList = ['plus', 'minus', 'divide', 'multiply', 'equals', 'decimal', 'shift', 'cancel'];
+    let idList = ['plus', 'minus', 'divide', 'multiply', 'equals', 'decimal',
+        'shift', 'cancel'];
     let answer = false;
     if (eventKey >= 0 && eventKey <=9){
         answer = eventKey;
@@ -72,6 +73,7 @@ function itsASymbol(thisOperation){
     switch (lastOperation){
         case 'start':
             currentTotal = lastNumber;
+            break;
         case 'plus':
             currentTotal += lastNumber;
             break;
@@ -92,8 +94,14 @@ function itsASymbol(thisOperation){
         lastOperation = 'start';
         currentTotal = 0;
     } else {
-        lastOperation = thisOperation;
-        clearDisplay();
+        if (thisOperation == 'cancel'){
+            lastOperation = 'start';
+            currentTotal = 0;
+            clearDisplay();
+        } else {
+            lastOperation = thisOperation;
+            clearDisplay();
+        }
     }
 }
 
@@ -110,7 +118,6 @@ function itsANumber(key){
         dispBox.innerText += key.toString();
     }
 }
-
 // These functions operate the numeric display
 
 function addToDisplay(keyPressed){
@@ -139,6 +146,7 @@ function clearDisplay(){
 // These are the actual operation buttons
 
 function cancelOperation(){
+    console.log("cancel reached");
     currentTotal = 0;
     lastOperation = 'start';
     clearDisplay();
