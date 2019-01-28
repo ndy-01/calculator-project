@@ -12,8 +12,8 @@ document.addEventListener('keydown', function(e){
 
 document.addEventListener('keyup', function(e){
     let keyPress = getKeyPressed(e.key);
-    if (keyPress != false && keyPress != "shift"){
-        shoogleTheBox(getKeyPressed(e.key));
+    if (keyPress !== false && keyPress != "shift"){
+        shoogleTheBox(keyPress);
     }
 });
 
@@ -88,11 +88,15 @@ function itsASymbol(thisOperation){
             break;
         case 'equals':
             break;
+        case 'decimal':
+            break;
     }
     if (thisOperation == 'equals'){
         printToDisplay(currentTotal);
         lastOperation = 'start';
         currentTotal = 0;
+    } else if(thisOperation == 'decimal'){
+        addADecimal();
     } else {
         if (thisOperation == 'cancel'){
             lastOperation = 'start';
@@ -143,10 +147,18 @@ function clearDisplay(){
     numDisplay.innerText = 0;
 }
 
+function addADecimal(){
+    let displayBox = document.getElementById('numDisplay');
+    let currentReading = displayBox.innerText;
+    console.log(currentReading.includes("."));
+    if (currentReading.includes(".") != true){
+        displayBox.innerText = currentReading + ".";
+    }
+}
+
 // These are the actual operation buttons
 
 function cancelOperation(){
-    console.log("cancel reached");
     currentTotal = 0;
     lastOperation = 'start';
     clearDisplay();
