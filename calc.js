@@ -84,20 +84,24 @@ function itsASymbol(thisOperation){
             currentTotal = currentTotal * lastNumber;
             break;
         case 'divide':
-            currentTotal = currentTotal / lastNumber;
+            currentTotal = (lastNumber == 0 ? "div by zero"
+                : currentTotal / lastNumber);
+            lastOperation = (lastNumber == 0 ? "divbyzero" : lastOperation);
             break;
         case 'equals':
             break;
         case 'decimal':
+            break;
+        case 'divbyzero':
             break;
     }
     if (thisOperation == 'equals'){
         printToDisplay(currentTotal);
         lastOperation = 'start';
         currentTotal = 0;
-    } else if(thisOperation == 'decimal'){
+    } else if (thisOperation == 'decimal'){
         addADecimal();
-    } else {
+    } else if (currentTotal != "divbyzero"){
         if (thisOperation == 'cancel'){
             lastOperation = 'start';
             currentTotal = 0;
@@ -139,7 +143,7 @@ function readDisplay(){
 
 function printToDisplay(thisNumber){
     let numDisplay = document.getElementById('numDisplay');
-    numDisplay.innerText = currentTotal;
+    numDisplay.innerText = thisNumber;
 }
 
 function clearDisplay(){
