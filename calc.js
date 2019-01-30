@@ -32,9 +32,9 @@ function dealWithKeyPress(event){
 }
 
 function getKeyPressed(eventKey){
-    let symbolList = ['+', '-', '/', '*', '=', '.', 'Shift', 'c'];
+    let symbolList = ['+', '-', 'd', '*', '=', '.', 'Shift', 'c', 'Backspace', 'Enter'];
     let idList = ['plus', 'minus', 'divide', 'multiply', 'equals', 'decimal',
-        'shift', 'cancel'];
+        'shift', 'cancel', 'backspace', 'equals'];
     let answer = false;
     if (eventKey >= 0 && eventKey <=9){
         answer = eventKey;
@@ -55,9 +55,9 @@ function shoogleTheBox(boxID){
 // These are the thinking operations
 
 function displayTooLong(){
-    var numDisplay = document.getElementById('numDisplay');
-    var strDisplay = numDisplay.innerText;
-    return (strDisplay.length < 8 ? false : true);
+    let numDisplay = document.getElementById('numDisplay');
+    let strDisplay = Number(numDisplay.innerText);
+    return false; //(strDisplay.length < 8 ? false : true);
 }
 
 function isKeyASymbol(keyPress){
@@ -69,6 +69,7 @@ function isKeyASymbol(keyPress){
 }
 
 function itsASymbol(thisOperation){
+    console.log(thisOperation);
     let lastNumber = readDisplay();
     switch (lastOperation){
         case 'start':
@@ -84,9 +85,7 @@ function itsASymbol(thisOperation){
             currentTotal = currentTotal * lastNumber;
             break;
         case 'divide':
-            currentTotal = (lastNumber == 0 ? "div by zero"
-                : currentTotal / lastNumber);
-            lastOperation = (lastNumber == 0 ? "divbyzero" : lastOperation);
+            currentTotal = (lastNumber == 0 ? 'divbyzero' : currentTotal / lastNumber);
             break;
         case 'equals':
             break;
@@ -95,32 +94,42 @@ function itsASymbol(thisOperation){
         case 'divbyzero':
             break;
     }
-    if (thisOperation == 'equals'){
-        printToDisplay(currentTotal);
-        lastOperation = 'start';
-        currentTotal = 0;
-    } else if (thisOperation == 'decimal'){
-        addADecimal();
-    } else if (currentTotal != "divbyzero"){
-        if (thisOperation == 'cancel'){
-            lastOperation = 'start';
+    switch (thisOperation){
+        case "equals":
+            if (currentTotal != "divbyzero"){
+                printToDisplay(currentTotal%1 == 0 ? Math.floor(currentTotal) : currentTotal.toFixed(8));
+            } else {
+                printToDisplay(currentTotal);
+            }
+            lastOperation = "ended";
             currentTotal = 0;
+            break;
+        case "decimal":
+            addADecimal();
+            break;
+        case "cancel":
             clearDisplay();
-        } else {
+            currentTotal = 0;
+            lastOperation = "start";
+            break;
+        case "backspace":
+            chopOffLastCharacter();
+            break;
+        default:
             lastOperation = thisOperation;
-            clearDisplay();
-        }
+            clearDisplay();    
     }
 }
 
-function keyNotEquals(lastNumber,keyPressed){
-    
-}
 
 function itsANumber(key){
     let dispBox = document.getElementById('numDisplay');
     let currentDisplay = dispBox.innerText;
-    if (currentDisplay.length == 1 && currentDisplay == "0"){
+    //if (currentDisplay.length == 1 && currentDisplay == "0"){
+    if (currentDisplay == "0" && lastOperation != "ended"){
+        dispBox.innerText = key.toString();
+    } else if (lastOperation == "ended"){
+        lastOperation = "start";
         dispBox.innerText = key.toString();
     } else {
         dispBox.innerText += key.toString();
@@ -141,6 +150,16 @@ function readDisplay(){
     return Number(numDisplay.innerText);
 }
 
+function chopOffLastCharacter(){
+    let strDisplay = readDisplay().toString();
+    if (strDisplay.length > 1){
+        let newDisplay = strDisplay.slice(0, strDisplay.length - 1);
+        printToDisplay(newDisplay);
+    } else{
+        printToDisplay(0);
+    }
+}
+
 function printToDisplay(thisNumber){
     let numDisplay = document.getElementById('numDisplay');
     numDisplay.innerText = thisNumber;
@@ -154,7 +173,6 @@ function clearDisplay(){
 function addADecimal(){
     let displayBox = document.getElementById('numDisplay');
     let currentReading = displayBox.innerText;
-    console.log(currentReading.includes("."));
     if (currentReading.includes(".") != true){
         displayBox.innerText = currentReading + ".";
     }
